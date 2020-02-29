@@ -31,6 +31,8 @@ class FormstackUtility:
     def _send_request(call_method: CallMethod, endpoint: str, return_json_content: bool, data: dict = None):
         headers = {'Content-Type': 'application/json',
                    'Authorization': 'Bearer {0}'.format(API_ACCESS_TOKEN)}
+        if data is not None:
+            data = json.dumps(data)
         response = call_method(API_BASE_URL + endpoint, headers=headers, data=data)
 
         # TODO: HTTP status code check and error handling on response
@@ -62,6 +64,13 @@ class FormstackUtility:
                                               endpoint=endpoint,
                                               return_json_content=return_json_content)
 
+    @staticmethod
+    def put(endpoint: str, data: dict, return_json_content=True):
+        return FormstackUtility._send_request(call_method=FormstackUtility.CallMethod.PUT,
+                                              endpoint=endpoint,
+                                              return_json_content=return_json_content,
+                                              data=data)
+
 
 class FormstackForm:
     _form_id = None
@@ -80,10 +89,13 @@ class FormstackForm:
     def __init__(self, form_id):
         self.form_id = form_id
 
-    def get_fields(self) -> pd.DataFrame:
+    def get_fields(self) -> typing.Optional[pd.DataFrame]:
         df = pd.DataFrame(self._json_data['fields'])
-        df['id'] = df['id'].astype(int)
-        return df[df['type'] != 'section'][['id', 'label', 'description']].set_index('id')
+        if len(df) > 0:
+            df['id'] = df['id'].astype(int)
+            return df[df['type'] != 'section'][['id', 'label', 'description']].set_index('id')
+        else:
+            return None
 
     def refresh(self) -> None:
         logger.info(f'Refreshing form {self.form_id}')
@@ -101,8 +113,10 @@ class FormstackForm:
         return FormstackUtility.get(f'field/{field_id}', return_json_content=True)
 
     def add_field(self, field_type: str, label: str, hide_label: bool = None, description: str = None,
-                  description_callout: bool = None, default_value: str = None, required: bool = None,
-                  read_only: bool = None, hidden: bool = None, unique: bool = None):
+                  description_callout: bool = None, default_value: str = None, options: typing.List[str] = None,
+                  options_values: typing.List[str] = None, required: bool = None, read_only: bool = None,
+                  hidden: bool = None, unique: bool = None, column_span: int = None, sort: int = None,
+                  attributes: dict = None, logic: dict = None, calculation: str = None):
         data = {'field_type': field_type,
                 'label': label,
                 'hide_label': "1" if hide_label else "0",
@@ -112,9 +126,63 @@ class FormstackForm:
                 'required': "1" if required else "0",
                 'readonly': "1" if read_only else "0",
                 'hidden': "1" if hidden else "0",
-                'uniq': "1" if unique else "0"}
+                'uniq': "1" if unique else "0",
+                'options':  options,
+                'options_values': options_values,
+                'colspan': column_span,
+                'sort': sort,
+                'attributes': attributes,
+                'logic': logic,
+                'calculation': calculation,
+                }
 
         return FormstackUtility.post(f'form/{self.form_id}/field', data=data)
+
+    def update_field(self, field_id: int, field_type: str = None, label: str = None,
+                     hide_label: bool = None, description: str = None,
+                  description_callout: bool = None, default_value: str = None, options: typing.List[str] = None,
+                  options_values: typing.List[str] = None, required: bool = None, read_only: bool = None,
+                  hidden: bool = None, unique: bool = None, column_span: int = None, sort: int = None,
+                  attributes: dict = None, logic: dict = None, calculation: str = None):
+        data = dict()
+        if field_type is not None:
+            data['field_type'] = field_type
+        if label is not None:
+            data['label'] = label
+        if hide_label is not None:
+            data['hide_label'] = "1" if hide_label else "0"
+        if description is not None:
+            data['description'] = description
+        if description_callout is not None:
+            data['description_callout'] =  "1" if description_callout else "0"
+        if default_value is not None:
+            data['default_value'] = default_value
+        if required is not None:
+            data['required'] = "1" if required else "0"
+        if read_only is not None:
+            data['readonly'] = "1" if read_only else "0"
+        if hidden is not None:
+            data['hidden'] = "1" if hidden else "0"
+        if unique is not None:
+            data['uniq'] = "1" if unique else "0"
+        if options is not None:
+            data['options'] = options
+        if options_values is not None:
+            data['options_values'] = options_values
+        if column_span is not None:
+            data['colspan'] = column_span
+        if sort is not None:
+            data['sort'] = sort
+        if attributes is not None:
+            data['attributes'] = attributes
+        if logic is not None:
+            data['logic'] = logic
+        if calculation is not None:
+            data['calculation'] = calculation
+
+        return FormstackUtility.put(f'field/{field_id}', data=data)
+
+
 
 
 class FormstackSubmissionHelper:
