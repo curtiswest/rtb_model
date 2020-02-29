@@ -6,7 +6,7 @@ from sqlalchemy import Column, Enum, Integer, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
 
-from model import base
+from . import base
 
 
 class Answer(base.Base):

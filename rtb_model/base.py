@@ -20,6 +20,9 @@ elif DATABASE_ENVIRONMENT in ("TEST", "TESTING"):
     database_username = config('TEST_DATABASE_USERNAME')
     database_password = config('TEST_DATABASE_PASSWORD')
     database_name = config('TEST_DATABASE_NAME')
+else:
+    raise ValueError('DATABASE_ENVIRONMENT environment variable must be one of the following: '
+                     f'PROD, PRODUCTION, TEST, TESTING. Current value: {DATABASE_ENVIRONMENT}')
 
 DATABASE_CONNECTION_URL = f'postgresql://{database_username}:' \
                           f'{database_password}@' \

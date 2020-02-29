@@ -6,8 +6,8 @@ from uuid import uuid4
 from sqlalchemy import Boolean, CHAR, Column, DateTime, Integer, String
 from sqlalchemy.dialects.postgresql import BIGINT, UUID
 
-from model import base
-from Formstack import FormstackSubmission
+from . import base
+from .formstack_utilities import FormstackSubmissionHelper
 
 
 class Company(base.Base):
@@ -38,7 +38,7 @@ class Company(base.Base):
         return self.__str__()
 
     @classmethod
-    def from_formstack(cls, formstack_submission: FormstackSubmission):
+    def from_formstack(cls, formstack_submission: FormstackSubmissionHelper):
         data = formstack_submission.get_data()
 
         abs_group_to_field_id = {

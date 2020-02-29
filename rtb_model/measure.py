@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
 
-from model import base
+from . import base
 
 
 class Measure(base.Base):

@@ -7,8 +7,8 @@ from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
 
-from Formstack import FormstackSubmission
-from model import base
+from .formstack_utilities import FormstackSubmissionHelper
+from . import base
 
 
 class OnlineUser(base.Base):
@@ -35,7 +35,7 @@ class OnlineUser(base.Base):
         return prefix, first_name, last_name
 
     @classmethod
-    def from_formstack(cls, formstack_submission: FormstackSubmission) -> typing.List:
+    def from_formstack(cls, formstack_submission: FormstackSubmissionHelper) -> typing.List:
         field_map = {
             1: {'name': 87125327,
                 'email': 87125332,

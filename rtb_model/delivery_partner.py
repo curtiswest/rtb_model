@@ -5,7 +5,7 @@ from uuid import uuid4
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
 
-from model import base
+from . import base
 
 
 class DeliveryPartner(base.Base):

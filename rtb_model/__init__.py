@@ -6,6 +6,7 @@ from .company import Company
 from .component import Component
 from .criterion import Criterion
 from .delivery_partner import DeliveryPartner
+from .formstack_utilities import FormstackSubmissionHelper, FormstackForm, FormstackUtility
 from .formstacksubmission import FormstackSubmission
 from .measure import Measure
 from .onelineuser import OnlineUser

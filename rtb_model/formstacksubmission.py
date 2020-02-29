@@ -2,7 +2,7 @@
 
 from sqlalchemy import Column, Integer, DateTime
 
-from model import base
+from . import base
 
 
 class FormstackSubmission(base.Base):

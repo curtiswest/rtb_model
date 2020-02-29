@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-setup(name='rtb_mobel',
+setup(name='rtb_model',
       version='1.0',
       description='The data model backing Raise the BAR',
       url='git@github.com:curtiswest/rtb_model.git',
@@ -10,4 +10,5 @@ setup(name='rtb_mobel',
       author_email='curtis@curtiswest.net',
       license='None',
       packages=['rtb_model'],
-      zip_safe=False)
+      zip_safe=False,
+      install_requires=['sqlalchemy', 'python-decouple', 'pandas', 'pytz', 'requests'])
