@@ -1,6 +1,6 @@
 #  Copyright (c) 2020 Curtis West <curtis@curtiswest.net>. All Rights Reserved
 
-from .base import Session, Base
+from .base import Session, Base, engine
 from .answer import Answer
 from .company import Company
 from .component import Component
