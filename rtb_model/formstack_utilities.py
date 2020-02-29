@@ -5,9 +5,11 @@ import json
 import typing
 import logging
 import datetime as dt
+import enum
 
 import pytz
 import pandas as pd
+
 
 from decouple import config
 
@@ -19,17 +21,46 @@ API_BASE_URL = config('FORMSTACK_API_BASE_URL')
 
 
 class FormstackUtility:
+    class CallMethod(enum.Enum):
+        POST = requests.post
+        PUT = requests.put
+        DELETE = requests.delete
+        GET = requests.get
+
     @staticmethod
-    def get_formstack(endpoint, return_json_content=True):
+    def _send_request(call_method: CallMethod, endpoint: str, return_json_content: bool, data: dict = None):
         headers = {'Content-Type': 'application/json',
                    'Authorization': 'Bearer {0}'.format(API_ACCESS_TOKEN)}
-        response = requests.get(API_BASE_URL + endpoint, headers=headers)
+        response = call_method(API_BASE_URL + endpoint, headers=headers, data=data)
 
         # TODO: HTTP status code check and error handling on response
         if return_json_content:
             return json.loads(response.content.decode('utf-8'))
         else:
             return response
+
+    @staticmethod
+    def get_formstack(endpoint: str, return_json_content: bool = True):
+        return FormstackUtility.get(endpoint=endpoint, return_json_content=return_json_content)
+
+    @staticmethod
+    def get(endpoint: str, return_json_content=True):
+        return FormstackUtility._send_request(call_method=FormstackUtility.CallMethod.GET,
+                                              endpoint=endpoint,
+                                              return_json_content=return_json_content)
+
+    @staticmethod
+    def post(endpoint: str, data: dict, return_json_content=True):
+        return FormstackUtility._send_request(call_method=FormstackUtility.CallMethod.POST,
+                                              endpoint=endpoint,
+                                              return_json_content=return_json_content,
+                                              data=data)
+
+    @staticmethod
+    def delete(endpoint: str, return_json_content=True):
+        return FormstackUtility._send_request(call_method=FormstackUtility.CallMethod.DELETE,
+                                              endpoint=endpoint,
+                                              return_json_content=return_json_content)
 
 
 class FormstackForm:
@@ -56,12 +87,34 @@ class FormstackForm:
 
     def refresh(self) -> None:
         logger.info(f'Refreshing form {self.form_id}')
-        self._json_data = FormstackUtility.get_formstack(f'form/{self.form_id}', return_json_content=True)
+        self._json_data = FormstackUtility.get(f'form/{self.form_id}', return_json_content=True)
 
     def get_all_submission_ids(self) -> typing.List[int]:
         return [int(i['id']) for i in
-                FormstackUtility.get_formstack(f'form/{self.form_id}/submission'
+                FormstackUtility.get(f'form/{self.form_id}/submission'
                                                , return_json_content=True)['submissions']]
+
+    def delete_field(self, field_id: int):
+        return FormstackUtility.delete(f'field/{field_id}', return_json_content=True)
+
+    def get_field(self, field_id: int):
+        return FormstackUtility.get(f'field/{field_id}', return_json_content=True)
+
+    def add_field(self, field_type: str, label: str, hide_label: bool = None, description: str = None,
+                  description_callout: bool = None, default_value: str = None, required: bool = None,
+                  read_only: bool = None, hidden: bool = None, unique: bool = None):
+        data = {'field_type': field_type,
+                'label': label,
+                'hide_label': "1" if hide_label else "0",
+                'description': description,
+                'description_callout': "1" if description_callout else "0",
+                'default_value': default_value,
+                'required': "1" if required else "0",
+                'readonly': "1" if read_only else "0",
+                'hidden': "1" if hidden else "0",
+                'uniq': "1" if unique else "0"}
+
+        return FormstackUtility.post(f'form/{self.form_id}/field', data=data)
 
 
 class FormstackSubmissionHelper:
