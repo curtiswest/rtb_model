@@ -5,7 +5,7 @@ from setuptools import setup
 setup(name='rtb_mobel',
       version='1.0',
       description='The data model backing Raise the BAR',
-      url='http://github.com/curtiswest/rtb_model',
+      url='git@github.com:curtiswest/rtb_model.git',
       author='Curtis West',
       author_email='curtis@curtiswest.net',
       license='None',
