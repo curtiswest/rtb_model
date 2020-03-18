@@ -16,6 +16,7 @@ class Measure(base.Base):
     text = Column(String, unique=True)
     criterion_id = Column(UUID(as_uuid=True), ForeignKey('criterion.id'))
     criterion = relationship("Criterion", backref=backref("criterion"))
+    description = Column(String)
 
     def __repr__(self):
         return f'C{self.criterion.component.number}.R{self.criterion.number}.M{self.number}: {self.text}'
