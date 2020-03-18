@@ -21,7 +21,11 @@ class Criterion(base.Base):
     introductory_text = Column(Text)
 
     def __repr__(self):
-        return f'C{self.component.number}.R{self.number}: {self.name}'
+        return f'{self.identifier}: {self.name}'
 
     def __str__(self):
         return self.__repr__()
+
+    @property
+    def identifier(self):
+        return f'C{self.component.number}.R{self.number}'

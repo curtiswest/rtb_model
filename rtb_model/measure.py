@@ -19,7 +19,11 @@ class Measure(base.Base):
     description = Column(String)
 
     def __repr__(self):
-        return f'C{self.criterion.component.number}.R{self.criterion.number}.M{self.number}: {self.text}'
+        return f'{self.identifier}: {self.text}'
 
     def __str__(self):
         return self.__repr__()
+
+    @property
+    def identifier(self):
+        return f'C{self.criterion.component.number}.R{self.criterion.number}.M{self.number}'

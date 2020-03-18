@@ -15,7 +15,11 @@ class Component(base.Base):
     name = Column(String, unique=True)
 
     def __repr__(self):
-        return f'C{self.number}: {self.name}'
+        return f'{self.identifier}: {self.name}'
 
     def __str__(self):
         return self.__repr__()
+
+    @property
+    def identifier(self):
+        return f'C{self.number}'
