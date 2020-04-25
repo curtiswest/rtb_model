@@ -33,6 +33,7 @@ class FormstackUtility:
                    'Authorization': 'Bearer {0}'.format(API_ACCESS_TOKEN)}
         if data is not None:
             data = json.dumps(data)
+        logging.debug(f'Sending request to Formstack. Endpoint: {API_BASE_URL + endpoint}, \n\theaders: {headers}, \n\tdata: {data}')
         response = call_method(API_BASE_URL + endpoint, headers=headers, data=data)
 
         # TODO: HTTP status code check and error handling on response
@@ -181,8 +182,6 @@ class FormstackForm:
             data['calculation'] = calculation
 
         return FormstackUtility.put(f'field/{field_id}', data=data)
-
-
 
 
 class FormstackSubmissionHelper:
