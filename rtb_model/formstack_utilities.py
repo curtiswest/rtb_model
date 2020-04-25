@@ -33,8 +33,9 @@ class FormstackUtility:
                    'Authorization': 'Bearer {0}'.format(API_ACCESS_TOKEN)}
         if data is not None:
             data = json.dumps(data)
-        logging.debug(f'Sending request to Formstack. Endpoint: {API_BASE_URL + endpoint}, \n\theaders: {headers}, \n\tdata: {data}')
+        logging.debug(f'Sending request to Formstack via method {call_method}. Endpoint: {API_BASE_URL + endpoint}, \n\theaders: {headers}, \n\tdata: {data}')
         response = call_method(API_BASE_URL + endpoint, headers=headers, data=data)
+        logging.debug(f'Received response from Formstack: {response} w/ content: {response.content}')
 
         # TODO: HTTP status code check and error handling on response
         if return_json_content:
