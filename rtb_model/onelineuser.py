@@ -27,10 +27,16 @@ class OnlineUser(base.Base):
 
     @staticmethod
     def extract_name_parts(from_str):
-        prefix, first_name, last_name = from_str.split('\n')
-        prefix = prefix.replace('prefix = ', '')
-        first_name = first_name.replace('first = ', '')
-        last_name = last_name.replace('last = ', '')
+        # Order of name parts is not deterministic. Need to dynamically find within `from_str`
+        name_parts = from_str.split('\n')
+        prefix, first_name, last_name = '', '', ''
+        for name_part in name_parts:
+            if 'first =' in name_part:
+                first_name = name_part.replace('first =', '').strip()
+            elif 'last =' in name_part:
+                last_name = name_part.replace('last =', '').strip()
+            elif 'prefix =' in name_part:
+                prefix = name_part.replace('prefix =', '').strip()
 
         return prefix, first_name, last_name
 
