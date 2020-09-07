@@ -22,10 +22,10 @@ class QuickstartAnswer(base.Base):
     __tablename__: str = 'quickstartanswer'
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     quickstart_user_id = Column(UUID(as_uuid=True), ForeignKey('quickstartuser.id'))
-    quickstart_user = relationship("QuickstartUser", backref=backref("quickstartuser"))
+    quickstart_user = relationship("QuickstartUser", backref=backref("quickstartuser_quickstartanswer"))
 
     question_id = Column(UUID(as_uuid=True), ForeignKey('quickstartquestion.id'))
-    question = relationship('QuickstartQuestion', backref=backref("quickstartquestion"))
+    question = relationship('QuickstartQuestion', backref=backref("quickstartquestion_quickstartanswer"))
 
     answer = Column(Enum(QuickstartLikertAnswer))
 

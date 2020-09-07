@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='rtb_model',
-      version='1.6.3',
+      version='1.6.4',
       description='The data model backing Raise the BAR',
       url='git@github.com:curtiswest/rtb_model.git',
       author='Curtis West',

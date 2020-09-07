@@ -18,7 +18,7 @@ class QuickstartQuestion(base.Base):
     formstack_form_id = Column(Integer, nullable=False)
 
     component_id = Column(UUID(as_uuid=True), ForeignKey('component.id'))
-    component: Component = relationship("Component", backref=backref("component"))
+    component: Component = relationship("Component", backref=backref("component_quickstartquestion"))
 
     def __repr__(self):
         return f'Quickstart question: {self.question_text} related to component #{self.component.number}'
