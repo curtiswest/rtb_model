@@ -18,8 +18,8 @@ class QuickstartUser(base.Base):
     last_name = Column(String)
     email = Column(String)
     job_title = Column(String)
-    online_user_id = Column(UUID(as_uuid=True), ForeignKey('onlineuser.id'))
-    online_user = relationship("OnlineUser", backref=backref("onlineuser"))
+    onlineuser_id = Column(UUID(as_uuid=True), ForeignKey('onlineuser.id'))
+    onlineuser = relationship("OnlineUser", backref=backref("onlineuser_quickstartuser"))
 
     def __repr__(self):
         return f'Quickstart User: {self.first_name} {self.last_name}: {self.job_title} @ {self.email}'
