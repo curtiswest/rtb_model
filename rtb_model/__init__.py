@@ -10,3 +10,6 @@ from .formstack_utilities import FormstackSubmissionHelper, FormstackForm, Forms
 from .formstacksubmission import FormstackSubmission
 from .measure import Measure
 from .onelineuser import OnlineUser
+from .quickstartuser import QuickstartUser
+from .quickstartanswer import QuickstartAnswer, QuickstartLikertAnswer
+from .quickstartquestion import QuickstartQuestion
