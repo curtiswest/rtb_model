@@ -10,6 +10,8 @@ from sqlalchemy.orm import relationship, backref
 from .formstack_utilities import FormstackSubmissionHelper
 from . import base
 
+import logging
+
 
 class OnlineUser(base.Base):
     __tablename__: str = 'onlineuser'
@@ -65,11 +67,15 @@ class OnlineUser(base.Base):
         users = list()
 
         for i in range(1, num_users + 1):
-            prefix, first_name, last_name = OnlineUser.extract_name_parts(data.loc[field_map[i]['name']].value)
-            email = data.loc[field_map[i]['email']].value
-            job_title = data.loc[field_map[i]['job_title']].value
-            # noinspection PyArgumentList
-            users.append(cls(prefix=prefix, first_name=first_name, last_name=last_name,
-                             email=email, job_title=job_title))
+            try:
+                if isinstance(data.loc[field_map[i]['name']].value, str):
+                    prefix, first_name, last_name = OnlineUser.extract_name_parts(data.loc[field_map[i]['name']].value)
+                    email = data.loc[field_map[i]['email']].value
+                    job_title = data.loc[field_map[i]['job_title']].value
+                    # noinspection PyArgumentList
+                    users.append(cls(prefix=prefix, first_name=first_name, last_name=last_name,
+                                     email=email, job_title=job_title))
+            except (AttributeError, ValueError, TypeError) as e:
+                logging.warn(f'Could not create online user due to an exception: {e}')
 
         return users
